@@ -1,4 +1,5 @@
 import { reloadable } from "./lib/tstl-utils";
+import { sleep } from "./lib/utils";
 import { modifier_panic } from "./modifiers/modifier_panic";
 
 const heroSelectionTime = 20;
@@ -93,12 +94,16 @@ export class GameMode {
         // Do some stuff here
     }
 
-    private OnNpcSpawned(event: NpcSpawnedEvent) {
+    private async OnNpcSpawned(event: NpcSpawnedEvent) {
         // After a hero unit spawns, apply modifier_panic for 8 seconds
         const unit = EntIndexToHScript(event.entindex) as CDOTA_BaseNPC; // Cast to npc since this is the 'npc_spawned' event
+        
         // Give all real heroes (not illusions) the meepo_earthbind_ts_example spell
         if (unit.IsRealHero()) {
             if (!unit.HasAbility("meepo_earthbind_ts_example")) {
+                // Wait for 5 seconds before giving it the ability
+                await sleep(5);
+
                 // Add lua ability to the unit
                 unit.AddAbility("meepo_earthbind_ts_example");
             }
